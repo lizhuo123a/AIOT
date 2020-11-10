@@ -15,7 +15,7 @@ class HandleRequest:
     def __init__(self):
         self.one_session = requests.Session()
 
-    def to_request(self,url,method="post",data=None,headers=None,is_json=True):
+    def to_request(self,url,method="post",data=None,headers=None,is_json=True,is_params=False):
         method = method.lower()
         if isinstance(data,str):
             try:
@@ -27,10 +27,13 @@ class HandleRequest:
         if method == "get":
             res = self.one_session.get(url=url,params=data,headers=headers)
         elif method == "post":
-            if is_json:
-                res = self.one_session.post(url=url,json=data,headers=headers)
+            if is_params:
+                res = self.one_session.post(url=url, params=data, headers=headers)
             else:
-                res = self.one_session.post(url=url,data=data,headers=headers)
+                if is_json:
+                    res = self.one_session.post(url=url,json=data,headers=headers)
+                else:
+                    res = self.one_session.post(url=url,data=data,headers=headers)
         else:
             res = None
             get_log.info(f"暂不支持{method}方法")
